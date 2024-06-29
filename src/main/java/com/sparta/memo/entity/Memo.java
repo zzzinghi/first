@@ -20,4 +20,9 @@ public class Memo {                 //지금은 기본 생성자만 있음.
 // 메모 클래스의 유저네임,컨탠츠 필드에 데이터를 넣어주면서 메모 객체를 만들어내는 그러한 생성자를 만들어냄
 //이렇게 하면, RequestDto - > Entitu 로 바꾸는 코드를 완성한것!
     }
+
+    public void update(MemoRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.contents = requestDto.getContents();
+    }
 }

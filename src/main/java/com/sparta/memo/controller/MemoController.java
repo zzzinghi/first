@@ -55,4 +55,34 @@ public class MemoController {
         return responseList;
     }
 
+    @PutMapping("/memos/{id}") //반환은 업데이트 한 아이디만 넘겨줄거라 long 타입
+    public Long updateMemo(@PathVariable Long id,@RequestBody MemoRequestDto requestDto) {
+        //우리가 메모를 수정하려면, 그 메모가 데이터베이스에 존재하는 지 확인하는게 안전함.
+        //해당 메모가 DB에 존재하는지 확인
+        if(memoList.containsKey(id)) {
+            //해당 메모를 가져오기
+            Memo memo = memoList.get(id);
+
+            //memo 수정 //update라는 메서드를 만들거고, ()안에다가 수정할 내용을 파라미터로 전달해 줘야함
+            memo.update(requestDto);
+            return memo.getId();
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    //데이터를 수정한다는 건 데이터의 내용, 컨탠츠도 같이 넘어옴 그 데이터 내용은 클라이언트 바디부분에서 넘어온다
+    //Body에 JSON 형식으로 넘어온다 @RequestBody
+    //업데이트 할 메모의 아이디 받아오고(@PathVariable)이걸로, 수정할 내용은 (@RequestBody)로 받아온다
+    }
+
+    @DeleteMapping("/memos/{id}")
+    public Long deleteMemo(@PathVariable Long id) {     //지우기만 하면 되니깐 id만 받는다
+        //해당 메모가  DB에 존재하는지 확인
+        if(memoList.containsKey(id)) {
+            // 해당 메모를 삭제하기
+            memoList.remove(id);
+            return id;
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
 }
