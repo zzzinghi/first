@@ -33,14 +33,10 @@ public class MemoController {
     public Long updateMemo(@PathVariable Long id, @RequestBody MemoRequestDto requestDto) {
         return memoService.updateMemo(id, requestDto);
 
-
     }
 
     @DeleteMapping("/memos/{id}")
     public Long deleteMemo(@PathVariable Long id) {
         return memoService.deleteMemo(id);
-
     }
-
-
 }
