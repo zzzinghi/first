@@ -34,7 +34,6 @@ public class MemoService {
     public List<MemoResponseDto> getMemos() {
         // DB 조회
         return memoRepository.findAll();
-
     }
 
     public Long updateMemo(Long id, MemoRequestDto requestDto) {

@@ -20,7 +20,6 @@ public class MemoController {
     @PostMapping("/memos")
     public MemoResponseDto createMemo(@RequestBody MemoRequestDto requestDto) {
         return memoService.createMemo(requestDto); //컨트롤러의 메서드의 이름과 서비싀의 메서드 이름을 일치시키면 누가봐도 컨트럴로 크리에이트에섯 이름을 받아서 비지니스 로직을 수행하는 메서드구나..하고 알 수 있음
-
     }
 
     @GetMapping("/memos")

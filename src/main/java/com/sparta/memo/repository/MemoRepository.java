@@ -13,6 +13,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Repository
@@ -29,27 +31,28 @@ public class MemoRepository {
         //DB 저장
         KeyHolder keyHolder = new GeneratedKeyHolder(); // 기본 키를 반환받기 위한 객체
 
-        String sql = "INSERT INTO memo (username, contents) VALUES (?, ?)";
+        String sql = "INSERT INTO memo (username, contents,title,password) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update( con -> {
                     PreparedStatement preparedStatement = con.prepareStatement(sql,
                             Statement.RETURN_GENERATED_KEYS);
 
                     preparedStatement.setString(1, memo.getUsername());
                     preparedStatement.setString(2, memo.getContents());
+                    preparedStatement.setString(3, memo.getTitle());
+                    preparedStatement.setString(4, memo.getPassword());
                     return preparedStatement;
                 },
                 keyHolder);
 
         // DB Insert 후 받아온 기본키 확인
         Long id = keyHolder.getKey().longValue();
-        memo.setId(id);
-
+        memo.setId(id); //auto increasment를 위해서 사용
         return memo;
     }
 
     public List<MemoResponseDto> findAll() {
         // DB 조회
-        String sql = "SELECT * FROM memo";
+        String sql = "SELECT * FROM memo";   //DB에 있는 거 다들고 옴
 
         return jdbcTemplate.query(sql, new RowMapper<MemoResponseDto>() {
             @Override
@@ -58,7 +61,11 @@ public class MemoRepository {
                 Long id = rs.getLong("id");
                 String username = rs.getString("username");
                 String contents = rs.getString("contents");
-                return new MemoResponseDto(id, username, contents);
+                String password = rs.getString("password");
+                String title = rs.getString("title");
+                LocalDateTime date = LocalDateTime.parse(rs.getString("date"),DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+                return new MemoResponseDto(id, username, contents, password, title, date);
             }
         });
     }
@@ -74,7 +81,6 @@ public class MemoRepository {
         jdbcTemplate.update(sql, id);
 
     }
-
     //공용으로 사용하는 건 가장 아래로 보내주자!
     public Memo findById(Long id) {
         // DB 조회
