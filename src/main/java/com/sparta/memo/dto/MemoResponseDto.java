@@ -31,7 +31,5 @@ public class MemoResponseDto {
         this.password = password;
         this.title = title;
         this.date = date;
-
     }
-
 }

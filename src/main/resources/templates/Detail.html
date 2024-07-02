@@ -13,13 +13,53 @@
 <body>
 <h1>Memo Detail</h1>
 <div>
+    <p><strong>Username:</strong> <span th:text="${memo.id}"></span></p> <!-- 1. id값이 이상할경우 -->
     <p><strong>Username:</strong> <span th:text="${memo.username}"></span></p>
     <p><strong>Title:</strong> <span th:text="${memo.title}"></span></p>
     <p><strong>Contents:</strong> <span th:text="${memo.contents}"></span></p>
     <p><strong>Date:</strong> <span th:text="${memo.date}"></span></p>
 </div>
-<a href="/">Back to list</a>
+
+<!--<a class="btn btn-primary" type="submit" th:href="@{/Edit}">수정 페이지</a>-->
+<!--<a class="btn btn-primary" th:href="@{/edit/{id}(id=${memo.id})}">수정 페이지</a>-->
+<a class="btn btn-primary" onclick="checkPassword()">수정 페이지</a>
+<a class="btn btn-primary" onclick="deleteOne([[${memo.id}]])">삭제</a>
+<!--<a class="btn btn-primary" th:href="@{'/edit/' + ${memo.id}}">수정 페이지</a>-->
+
+
+<a href="/">뒤로 가기</a>
 <!-- 기능 -->
+<script>
+    function checkPassword() {
+        var userInput = prompt("Please enter the password:");
+        if (userInput == [[${memo.password}]]) {
+            window.location.href = "/edit/" + [[${memo.id}]]; // 비밀번호가 일치하면 secret 페이지로 이동
+        } else {
+            alert("Incorrect password. Please try again.");
+        }
+    }
+</script>
+<script>
+    function deleteOne(id) {
+        var userInput = prompt("Please enter the password:");
+        if (userInput == [[${memo.password}]]) {
+            $.ajax({
+                type: "DELETE",
+                url: `/api/memos/${id}`,
+                success: function (response) {
+                    alert('메시지 삭제에 성공하였습니다.');
+                    window.location.href = "/";
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error deleting memo:', status, error);
+                    alert('메시지 삭제에 실패하였습니다.');
+                }
+            });
+        } else {
+            alert("Incorrect password. Please try again.");
+        }
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 <script type= text/javascript></script>
 </body>

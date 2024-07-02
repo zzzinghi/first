@@ -2,9 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit</title>
+    <title>Write</title>
+    <!-- 부트스트랩 아이콘 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- 부트스트랩 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
+<textarea class="field" placeholder="공유하고 싶은 소식을 입력해주세요" name="contents" id="contents" cols="30" rows="10" th:text="${memo.contents}"></textarea>
+<div class="input-group input-group-lg">
+    <span class="input-group-text">username</span>
+    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" th:value="${memo.username}" id="username">
+</div>
+<div class="input-group input-group-lg">
+    <span class="input-group-text">title</span>
+    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" th:value="${memo.title}" id="title">
+</div>
+<div class="input-group input-group-lg">
+    <span class="input-group-text">password</span>
+    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" th:value="${memo.password}"  id="password">
+</div>
+<a class="btn btn-primary" onclick="writePost()">수정</a>
+<a class="btn btn-primary" onclick="deleteOne([[${memo.id}]])">삭제</a>
+<!-- 기능 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script type= text/javascript>
+    // 메모를 생성합니다.
+    function writePost() {
+        // 1. 작성한 메모를 불러옵니다.
+        let contents = $('#contents').val();
+        let username = $('#username').val();
+        let title = $('#title').val();
+        let password = $('#password').val();
 
+        // 2. 작성한 메모가 올바른지 isValidContents 함수를 통해 확인합니다.
+        if (isValidContents(contents) == false) {
+            return;
+        }
+
+        // 4. 전달할 data JSON으로 만듭니다. ***
+        let data = {
+            'username': username,
+            'contents': contents,
+            'title': title,
+            'password': password,
+        };
+        //
+
+        // 5. POST /api/memos 에 data를 전달합니다.
+        $.ajax({ // 비동기 데이터 처리를 위한 javascript!
+            type: "POST",
+            url: "/edit/" + [[${memo.id}]], //[[${memo.id}]]
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                console.log(response)
+                alert('메시지가 성공적으로 작성되었습니다.');
+                window.location.href = "/detail/" + [[${memo.id}]];
+            }
+        });
+    }
+    // 메모를 삭제합니다.
+    function deleteOne(id, correctPassword) {
+        var userInput = prompt("Please enter the password:");
+        if (userInput === correctPassword) {
+            $.ajax({
+                type: "DELETE",
+                url: `/api/memos/${id}`,
+                success: function (response) {
+                    alert('메시지 삭제에 성공하였습니다.');
+                    window.location.href = "/";
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error deleting memo:', status, error);
+                    alert('메시지 삭제에 실패하였습니다.');
+                }
+            });
+        } else {
+            alert("Incorrect password. Please try again.");
+        }
+    }
+    function isValidContents(contents) {
+        if (contents == '') {
+            alert('내용을 입력해주세요');
+            return false;
+        }
+        if (contents.trim().length > 140) {
+            alert('공백 포함 140자 이하로 입력해주세요');
+            return false;
+        }
+        return true;
+    }
+</script>
 </body>
 </html>

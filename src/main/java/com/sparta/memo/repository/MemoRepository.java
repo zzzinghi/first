@@ -71,9 +71,8 @@ public class MemoRepository {
     }
 
     public void update(Long id, MemoRequestDto requestDto) {
-        String sql = "UPDATE memo SET username = ?, contents = ? WHERE id = ?";
-        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getContents(), id);
-
+        String sql = "UPDATE memo SET username = ?, contents = ?, password=?,title=? WHERE id = ?";
+        jdbcTemplate.update(sql, requestDto.getUsername(), requestDto.getContents(),requestDto.getPassword(),requestDto.getTitle(), id);
     }
 
     public void delete(Long id) {
@@ -89,6 +88,7 @@ public class MemoRepository {
         return jdbcTemplate.query(sql, resultSet -> {
             if(resultSet.next()) {
                 Memo memo = new Memo();
+                memo.setId(Long.valueOf(resultSet.getString("id")));  //**************
                 memo.setUsername(resultSet.getString("username"));
                 memo.setContents(resultSet.getString("contents"));
                 memo.setPassword(resultSet.getString("password"));  //여기서부터 3줄 추가해줌
