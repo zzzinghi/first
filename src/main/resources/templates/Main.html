@@ -11,7 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>
 <body>
-<a class="btn btn-primary" type="submit" th:href="@{/write}">Button</a>
+<a class="btn btn-primary" type="submit" th:href="@{/write}">작성 페이지</a>
 
 <table class="table" style="table-layout: fixed">
     <thead>
@@ -28,6 +28,7 @@
     <tr th:each="memo : ${memos}">
         <td th:text="${memo.id}"></td>
         <td ><a th:text="${memo.username}"></a></td>
+        <td><a th:href="@{/detail/{id}(id=${memo.id})}" th:text="${memo.title}"></a></td> <!-- 제목을 클릭하면 detail 페이지로 이동 -->
         <td style="width:40%; overflow:hidden; white-space:nowrap;text-overflow:ellipsis;" th:text="${memo.contents}"></td>
         <td th:text="${memo.password}"></td>
         <td th:text="${memo.title}"></td>

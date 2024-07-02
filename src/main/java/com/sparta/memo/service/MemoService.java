@@ -28,21 +28,28 @@ public class MemoService {
         // Entity -> ResponseDto
         MemoResponseDto memoResponseDto = new MemoResponseDto(memo);
 
-        return memoResponseDto;
+//        return memoResponseDto;
+        return new MemoResponseDto(saveMemo);
     }
 
     public List<MemoResponseDto> getMemos() {
         // DB 조회
         return memoRepository.findAll();
     }
-
+    public MemoResponseDto getMemoById(Long id) {       //이 클래스 추가함
+        Memo memo = memoRepository.findById(id);
+        if (memo != null) {
+            return new MemoResponseDto(memo);
+        } else {
+            throw new IllegalArgumentException("선택한 메모는 존재하지 않습니다.");
+        }
+    }
     public Long updateMemo(Long id, MemoRequestDto requestDto) {
         // 해당 메모가 DB에 존재하는지 확인
         Memo memo = memoRepository.findById(id);
         if(memo != null) {
             // memo 내용 수정
             memoRepository.update(id, requestDto);
-
 
             return id;
         } else {

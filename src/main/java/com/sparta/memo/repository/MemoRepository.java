@@ -91,6 +91,9 @@ public class MemoRepository {
                 Memo memo = new Memo();
                 memo.setUsername(resultSet.getString("username"));
                 memo.setContents(resultSet.getString("contents"));
+                memo.setPassword(resultSet.getString("password"));  //여기서부터 3줄 추가해줌
+                memo.setTitle(resultSet.getString("title"));
+                memo.setDate(LocalDateTime.parse(resultSet.getString("date"), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 return memo;
             } else {
                 return null;
