@@ -52,10 +52,15 @@ public class PostRestController {
         return ResponseEntity.ok().build();
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePost(@PathVariable Long id) {
-        postService.delete(id);
+    public ResponseEntity<?> deletePost(@PathVariable Long id,@RequestParam String password) {  //@RequestParam 추가함
+        postService.delete(id, password);
 
         return ResponseEntity.noContent().build();  //본문 생략하고, 클라이언트에게 요청의 성공 여부만을 전달함.
     }
-
+//    // 게시물 전체 목록 조회 - JSON 응답
+//    @GetMapping("/posts")
+//    public ResponseEntity<List<Post>> getAllPosts() {
+//        List<Post> posts = postService.getPosts();
+//        return ResponseEntity.ok(posts);
+//    }
 }

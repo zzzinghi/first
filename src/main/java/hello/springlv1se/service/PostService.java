@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -38,7 +37,7 @@ public class PostService {
                 .id(savePost.getId())
                 .writer(savePost.getWriter())
                 .title(savePost.getTitle())
-                .password(savePost.getPassword())
+//                .password(savePost.getPassword())
                 .comments(savePost.getComments())
                 .date(String.valueOf(savePost.getDate()))
                 .build();
@@ -54,7 +53,7 @@ public class PostService {
                 .id(post.getId())
                 .writer(post.getWriter())
                 .title(post.getTitle())
-                .password(post.getPassword())
+//                .password(post.getPassword())
                 .comments(post.getComments())
                 .date(String.valueOf(post.getDate()))
                 .build();
@@ -69,11 +68,25 @@ public class PostService {
     }
 
     //게시글 삭제
-    public void delete(Long id) {
+//    public void delete(Long id, String password) {
+//        Post post = postRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글 입니다."));
+//        postRepository.delete(post);
+//    }
+
+    public void delete(Long id, String password) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("존재하지 않는 게시글 입니다."));
 
-        postRepository.delete(post);
+        if (password.equals(post.getPassword())) {
+            postRepository.delete(post);
+        } else {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
     }
 
+    //게시물 목록 조회
+    public List<Post> getPosts() {
+        return postRepository.findAll();
+    }
 }

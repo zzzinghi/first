@@ -24,7 +24,7 @@
         <td th:text="${post.title}">제목 없음</td>
         <td th:text="${post.writer}">익명</td>
         <td th:text="${#temporals.format(post.date, 'yyyy-MM-dd HH:mm')}">-</td>
-        <td th:text="${post.content}">내용 없음</td>
+        <td th:text="${post.comments}">내용 없음</td>
     </tr>
     </tbody>
 </table>

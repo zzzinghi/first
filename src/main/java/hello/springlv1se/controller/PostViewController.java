@@ -15,6 +15,7 @@ import java.util.List;
 @Controller
 public class PostViewController {
 
+    private final PostService postService;
 
     @GetMapping("/")
     public String home() {
@@ -37,5 +38,11 @@ public class PostViewController {
         model.addAttribute("id", id);
         return "editPost";
     }
-
+    //게시물 전체 목록 조회 - HTML 뷰 반환
+    @GetMapping("/posts")
+    public String viewPosts(Model model) {
+        List<Post> posts = postService.getPosts();
+        model.addAttribute("posts", posts);
+        return "Posts";
+    }
 }

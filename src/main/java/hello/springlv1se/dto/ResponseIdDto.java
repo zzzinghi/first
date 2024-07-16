@@ -11,7 +11,7 @@ public class ResponseIdDto {
 
     private String title;
     private String writer;
-    private String password;
+//    private String password;
     private String comments;
     private String date;
 

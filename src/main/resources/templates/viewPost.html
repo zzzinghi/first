@@ -11,16 +11,23 @@
     <!-- Post details will be dynamically loaded here -->
 </div>
 <button onclick="editPost()">Edit</button>
-<button onclick="deletePost()">Delete</button>
+<button onclick="confirmDelete()">Delete</button>
+
+<!-- 비밀번호 입력 모달 -->
+<div id="passwordModal" style="display: none;">
+    <h2>Confirm Deletion</h2>
+    <p>Please enter your password to delete this post:</p>
+    <input type="password" id="passwordInput" placeholder="Enter password">
+    <button onclick="deletePost()">Confirm Delete</button>
+    <button onclick="closeModal()">Cancel</button>
+</div>
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function () {
         const id = /*[[${id}]]*/ '0'; // Fall back to '0' if undefined
-        console.log(id)
         fetch(`/api/${id}`)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
                 document.getElementById('postDetails').innerHTML = `
                         <h2>${data.title}</h2>
                         <p>${data.comments}</p>
@@ -36,16 +43,36 @@
         window.location.href = `/editPost/${id}`;
     }
 
+    function confirmDelete() {
+        document.getElementById('passwordModal').style.display = 'block';
+    }
+
     function deletePost() {
         const id = /*[[${id}]]*/ '0'; // Fall back to '0' if undefined
-        fetch(`/api/${id}`, {
-            method: 'DELETE'
+        const password = document.getElementById('passwordInput').value;
+
+        fetch(`/api/${id}?password=${password}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ password: password })
         })
-            .then(() => {
-                alert('Post deleted successfully!');
-                window.location.href = '/';
+            .then(response => {
+                if (response.ok) {
+                    alert('Post deleted successfully!');
+                    window.location.href = '/';
+                } else {
+                    alert('Failed to delete post. Incorrect password.');
+                }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => console.error('Error:', error))
+            .finally(() => closeModal());
+    }
+
+    function closeModal() {
+        document.getElementById('passwordModal').style.display = 'none';
+        document.getElementById('passwordInput').value = '';
     }
 </script>
 </body>
