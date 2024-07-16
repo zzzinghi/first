@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post</title>
+</head>
+<body>
+<h1>Create a New Post</h1>
+<form id="postForm">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title"><br>
+    <label for="writer">Writer:</label>
+    <input type="text" id="writer" name="writer"><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br>
+    <label for="comments">Comments:</label>
+    <textarea id="comments" name="comments"></textarea><br>
+    <button type="submit">Submit</button>
+</form>
+<script th:inline="javascript">
+    document.getElementById('postForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const postData = {
+            title: document.getElementById('title').value,
+            writer: document.getElementById('writer').value,
+            password: document.getElementById('password').value,
+            comments: document.getElementById('comments').value,
+            date: new Date().toISOString()
+        };
+        console.log('Fetched data:', postData); // 디버깅을 위해 추가
+        fetch('/api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('Post created successfully!');
+                window.location.href = `/post/${data.id}`;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>

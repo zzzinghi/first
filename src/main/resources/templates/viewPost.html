@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Post</title>
+</head>
+<body>
+<h1>Post Details</h1>
+<div id="postDetails">
+    <!-- Post details will be dynamically loaded here -->
+</div>
+<button onclick="editPost()">Edit</button>
+<button onclick="deletePost()">Delete</button>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const id = /*[[${id}]]*/ '0'; // Fall back to '0' if undefined
+        console.log(id)
+        fetch(`/api/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                document.getElementById('postDetails').innerHTML = `
+                        <h2>${data.title}</h2>
+                        <p>${data.comments}</p>
+                        <p>Written by: ${data.writer}</p>
+                        <p>Date: ${data.date}</p>
+                    `;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    function editPost() {
+        const id = /*[[${id}]]*/ '0'; // Fall back to '0' if undefined
+        window.location.href = `/editPost/${id}`;
+    }
+
+    function deletePost() {
+        const id = /*[[${id}]]*/ '0'; // Fall back to '0' if undefined
+        fetch(`/api/${id}`, {
+            method: 'DELETE'
+        })
+            .then(() => {
+                alert('Post deleted successfully!');
+                window.location.href = '/';
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+</body>
+</html>

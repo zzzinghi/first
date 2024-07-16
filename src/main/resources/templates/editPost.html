@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post</title>
+</head>
+<body>
+<h1>Edit Post</h1>
+<form id="editPostForm">
+    <label for="title">Title:</label>
+    <input type="text" id="title" name="title"><br>
+    <label for="writer">Writer:</label>
+    <input type="text" id="writer" name="writer"><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"><br>
+    <label for="comments">Comments:</label>
+    <textarea id="comments" name="comments"></textarea><br>
+    <button type="submit">Submit</button>
+</form>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        const id = /*[[${id}]]*/ '0'; // Fall back to '0' if undefined
+
+        fetch(`/api/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('title').value = data.title;
+                document.getElementById('writer').value = data.writer;
+                document.getElementById('password').value = data.password;
+                document.getElementById('comments').value = data.comments;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+
+    document.getElementById('editPostForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const id = /*[[${id}]]*/ '0'; // Fall back to '0' if undefined
+
+        const updatedData = {
+            title: document.getElementById('title').value,
+            writer: document.getElementById('writer').value,
+            password: document.getElementById('password').value,
+            comments: document.getElementById('comments').value,
+            date: new Date().toISOString()
+        };
+
+        fetch(`/api/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        })
+            .then(() => {
+                alert('Post updated successfully!');
+                window.location.href = `/post/${id}`;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>
